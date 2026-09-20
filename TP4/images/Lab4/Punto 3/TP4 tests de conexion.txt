@@ -98,3 +98,67 @@ Ping statistics for 8.8.8.8:
     Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
 Approximate round trip times in milli-seconds:
     Minimum = 0ms, Maximum = 3ms, Average = 0ms
+
+##Test de Admin a Business 1:
+
+C:\>ping 10.10.20.11
+
+Pinging 10.10.20.11 with 32 bytes of data:
+
+Reply from 10.10.20.11: bytes=32 time<1ms TTL=127
+Reply from 10.10.20.11: bytes=32 time<1ms TTL=127
+Reply from 10.10.20.11: bytes=32 time<1ms TTL=127
+Reply from 10.10.20.11: bytes=32 time=3ms TTL=127
+
+Ping statistics for 10.10.20.11:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 3ms, Average = 0ms
+
+##Test de Admin a Business 2:
+
+C:\>ping 10.10.20.12
+
+Pinging 10.10.20.12 with 32 bytes of data:
+
+Reply from 10.10.20.12: bytes=32 time<1ms TTL=127
+Reply from 10.10.20.12: bytes=32 time<1ms TTL=127
+Reply from 10.10.20.12: bytes=32 time<1ms TTL=127
+Reply from 10.10.20.12: bytes=32 time<1ms TTL=127
+
+Ping statistics for 10.10.20.12:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+##Test de Admin a Turista 1:
+
+C:\>ping 10.10.10.11
+
+Pinging 10.10.10.11 with 32 bytes of data:
+
+Reply from 10.10.10.11: bytes=32 time<1ms TTL=127
+Reply from 10.10.10.11: bytes=32 time<1ms TTL=127
+Reply from 10.10.10.11: bytes=32 time<1ms TTL=127
+Reply from 10.10.10.11: bytes=32 time<1ms TTL=127
+
+Ping statistics for 10.10.10.11:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+##Test de Admin a Turista 2:
+
+C:\>ping 10.10.10.12
+
+Pinging 10.10.10.12 with 32 bytes of data:
+
+Reply from 10.10.10.12: bytes=32 time<1ms TTL=127
+Reply from 10.10.10.12: bytes=32 time<1ms TTL=127
+Reply from 10.10.10.12: bytes=32 time=3ms TTL=127
+Reply from 10.10.10.12: bytes=32 time<1ms TTL=127
+
+Ping statistics for 10.10.10.12:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 3ms, Average = 0ms

@@ -168,3 +168,23 @@ Router#write memory
 Building configuration...
 [OK]
 Router#
+
+##Arreglos para ping entre Admin y turista:
+
+Router>enable
+Router#configure terminal
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#! Borramos la lista vieja
+Router(config)#no access-list 100
+Router(config)#! Permitimos que Turista se comunique con toda la red de Administracin (Servidor y Admin)
+Router(config)#access-list 100 permit ip 10.10.10.0 0.0.0.255 10.10.99.0 0.0.0.255
+Router(config)#! Mantenemos el bloqueo hacia Internet
+Router(config)#access-list 100 deny ip 10.10.10.0 0.0.0.255 any
+Router(config)#! Mantenemos el permiso para el resto
+Router(config)#access-list 100 permit ip any any
+Router(config)#end
+Router#write memory
+%SYS-5-CONFIG_I: Configured from console by console
+
+Building configuration...
+[OK]

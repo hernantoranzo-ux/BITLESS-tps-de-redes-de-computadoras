@@ -1,0 +1,170 @@
+## SWITCH AIRCRAFT
+Switch>enable
+Switch#configure terminal
+Enter configuration commands, one per line.  End with CNTL/Z.
+Switch(config)#vlan 10
+Switch(config-vlan)#name Turista
+Switch(config-vlan)#vlan 20
+Switch(config-vlan)#name Business
+Switch(config-vlan)#vlan 99 
+Switch(config-vlan)#name Admin
+Switch(config-vlan)#exit
+Switch(config)#interface FastEthernet0/1
+Switch(config-if)#switchport mode trunk
+Switch(config-if)#exit
+Switch(config)#interface range FastEthernet0/2 - 3
+Switch(config-if-range)#switchport mode access
+Switch(config-if-range)#switchport access vlan 10
+Switch(config-if-range)#exit
+Switch(config)#interface range FastEthernet0/4 - 5
+Switch(config-if-range)#switchport mode access
+Switch(config-if-range)#switchport access vlan 20
+Switch(config-if-range)#exit
+Switch(config)#interface FastEthernet0/6
+Switch(config-if)#switchport mode access
+Switch(config-if)#switchport access vlan 99
+Switch(config-if)#exit
+Switch(config)#interface FastEthernet0/7
+Switch(config-if)#switchport mode access
+Switch(config-if)#switchport access vlan 99	
+Switch(config-if)#end
+Switch#
+%SYS-5-CONFIG_I: Configured from console by console
+write memory
+Building configuration...
+[OK]
+Switch#
+
+## ROUTER AIRCRAFT:
+Router>enable
+Router#configure terminal
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#interface FastEthernet0/0
+Router(config-if)#no shutdown
+
+Router(config-if)#exit
+Router(config)#interface FastEthernet0/0.10
+Router(config-subif)#encapsulation dot1Q 10
+Router(config-subif)#ip address 10.10.10.1 255.255.255.0
+Router(config-subif)#ip nat inside
+Router(config-subif)#ip access-group 100 in
+Router(config-subif)#exit
+Router(config)#interface FastEthernet0/0.20
+Router(config-subif)#encapsulation dot1Q 20
+Router(config-subif)#ip address 10.10.20.1 255.255.255.0
+Router(config-subif)#ip nat inside
+Router(config-subif)#exit
+Router(config)#interface FastEthernet0/0.99
+Router(config-subif)#encapsulation dot1Q 99
+Router(config-subif)#ip address 10.10.99.1 255.255.255.0
+Router(config-subif)#ip nat inside
+Router(config-subif)#exit
+Router(config)#interface FastEthernet0/1
+Router(config-if)#ip address 200.0.0.1 255.255.255.252
+Router(config-if)#ip nat outside
+Router(config-if)#no shutdown
+
+Router(config-if)#exit
+Router(config)#ip dhcp excluded-address 10.10.10.1 10.10.10.10
+Router(config)#ip dhcp excluded-address 10.10.20.1 10.10.20.10
+Router(config)#ip dhcp excluded-address 10.10.99.1 10.10.99.10
+Router(config)#ip dhcp pool Turista
+Router(dhcp-config)#network 10.10.10.0 255.255.255.0
+Router(dhcp-config)#default-router 10.10.10.1
+Router(dhcp-config)#dns-server 10.10.99.10
+Router(dhcp-config)#exit
+Router(config)#ip dhcp pool Business
+Router(dhcp-config)#network 10.10.20.0 255.255.255.0
+Router(dhcp-config)#default-router 10.10.20.1
+Router(dhcp-config)#dns-server 8.8.8.8
+Router(dhcp-config)#exit
+Router(config)#ip dhcp pool Admin
+Router(dhcp-config)#network 10.10.99.0 255.255.255.0
+Router(dhcp-config)#default-router 10.10.99.1
+Router(dhcp-config)#dns-server 8.8.8.8
+Router(dhcp-config)#exit
+Router(config)#access-list 20 permit 10.10.20.0 0.0.0.255
+Router(config)#ip nat inside source list 20 interface FastEthernet0/1 overload
+Router(config)#access-list 100 deny ip 10.10.10.0 0.0.0.255 any
+Router(config)#access-list 100 permit ip any any
+Router(config)#ip route 0.0.0.0 0.0.0.0 200.0.0.2
+Router(config)#end
+Router#write memory
+%LINK-5-CHANGED: Interface FastEthernet0/0, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/0, changed state to up
+
+%LINK-3-UPDOWN: Interface FastEthernet0/0.10, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/0.10, changed state to up
+
+%LINK-3-UPDOWN: Interface FastEthernet0/0.20, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/0.20, changed state to up
+
+%LINK-3-UPDOWN: Interface FastEthernet0/0.99, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/0.99, changed state to up
+
+%LINK-5-CHANGED: Interface FastEthernet0/1, changed state to up
+
+%SYS-5-CONFIG_I: Configured from console by console
+
+Router#
+
+# Extras:
+
+##Router ISP:
+
+###Acceso a ISP para business:
+
+enable
+configure terminal
+! Encendemos la conexión hacia el avión
+interface FastEthernet0/0
+ip address 200.0.0.2 255.255.255.252
+no shutdown
+exit
+! Creamos una "Internet" virtual simulando un servidor de Google
+interface Loopback0
+ip address 8.8.8.8 255.255.255.255
+exit
+end
+write memory
+
+### Acceso a ISP para Admin:
+
+Router>enable
+Router#configure terminal
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#access-list 20 permit 10.10.99.0 0.0.0.255
+Router(config)#end
+Router#
+%SYS-5-CONFIG_I: Configured from console by console
+write memory
+Building configuration...
+[OK]
+Router#
+
+##Router Aircraft:
+
+##Arreglos para turista en servidor entretenimiento:
+
+Router>enable
+Router#configure terminal
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#! Borramos la lista vieja
+Router(config)#no access-list 100
+Router(config)#! Permitimos el trfico de Turista SOLO hacia el Servidor
+Router(config)#access-list 100 permit ip 10.10.10.0 0.0.0.255 host 10.10.99.10
+Router(config)#! Bloqueamos el resto (Internet) para Turista
+Router(config)#access-list 100 deny ip 10.10.10.0 0.0.0.255 any
+Router(config)#! Permitimos que el resto de las VLANs naveguen normalmente
+Router(config)#access-list 100 permit ip any any
+Router(config)#end
+Router#write memory
+%SYS-5-CONFIG_I: Configured from console by console
+
+Building configuration...
+[OK]
+Router#

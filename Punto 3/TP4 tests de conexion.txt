@@ -1,0 +1,100 @@
+##Test Turista a entretenimiento:
+
+C:\>ping 10.10.99.10
+
+Pinging 10.10.99.10 with 32 bytes of data:
+
+Reply from 10.10.99.10: bytes=32 time<1ms TTL=127
+Reply from 10.10.99.10: bytes=32 time<1ms TTL=127
+Reply from 10.10.99.10: bytes=32 time<1ms TTL=127
+Reply from 10.10.99.10: bytes=32 time<1ms TTL=127
+
+Ping statistics for 10.10.99.10:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+C:\>ping 8.8.8.8
+
+##Test de turista a ISP:
+
+Pinging 8.8.8.8 with 32 bytes of data:
+
+Reply from 10.10.10.1: Destination host unreachable.
+Reply from 10.10.10.1: Destination host unreachable.
+Reply from 10.10.10.1: Destination host unreachable.
+Reply from 10.10.10.1: Destination host unreachable.
+
+Ping statistics for 8.8.8.8:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+
+C:\>
+
+##Test de business a entretenimiento:
+C:\>ping 10.10.99.10
+
+Pinging 10.10.99.10 with 32 bytes of data:
+
+Reply from 10.10.99.10: bytes=32 time<1ms TTL=127
+Reply from 10.10.99.10: bytes=32 time<1ms TTL=127
+Reply from 10.10.99.10: bytes=32 time<1ms TTL=127
+Reply from 10.10.99.10: bytes=32 time<1ms TTL=127
+
+Ping statistics for 10.10.99.10:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+
+##Test Business a ISP:
+
+C:\>ping 8.8.8.8
+
+Pinging 8.8.8.8 with 32 bytes of data:
+
+Request timed out.
+Reply from 8.8.8.8: bytes=32 time<1ms TTL=254
+Reply from 8.8.8.8: bytes=32 time<1ms TTL=254
+Reply from 8.8.8.8: bytes=32 time=2ms TTL=254
+
+Ping statistics for 8.8.8.8:
+    Packets: Sent = 4, Received = 3, Lost = 1 (25% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 2ms, Average = 0ms
+
+C:\>
+
+
+##Test de Admin a entretenimiento:
+
+C:\>ping 10.10.99.10
+
+Pinging 10.10.99.10 with 32 bytes of data:
+
+Reply from 10.10.99.10: bytes=32 time<1ms TTL=128
+Reply from 10.10.99.10: bytes=32 time<1ms TTL=128
+Reply from 10.10.99.10: bytes=32 time<1ms TTL=128
+Reply from 10.10.99.10: bytes=32 time<1ms TTL=128
+
+Ping statistics for 10.10.99.10:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+C:\>
+
+##Test de Admin a ISP:
+
+C:\>ping 8.8.8.8
+
+Pinging 8.8.8.8 with 32 bytes of data:
+
+Reply from 8.8.8.8: bytes=32 time<1ms TTL=254
+Reply from 8.8.8.8: bytes=32 time<1ms TTL=254
+Reply from 8.8.8.8: bytes=32 time=3ms TTL=254
+Reply from 8.8.8.8: bytes=32 time<1ms TTL=254
+
+Ping statistics for 8.8.8.8:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 3ms, Average = 0ms

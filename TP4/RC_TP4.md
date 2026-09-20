@@ -93,3 +93,85 @@ Esta etiqueta posee dos campos principales:
 - **Prioridad de usuario (PCP / 802.1p):** Es un campo de 3 bits que permite clasificar el tráfico para dar tratamiento de calidad de servicio (QoS), de forma de poder priorizar tramas de voz o video sobre otras más convencionales.
 
 Mientras tanto, el proceso de **Untagging** sería el proceso inverso: cuando la Trama (tagged) llega al switch correspondiente al dispositivo de destino, este se encarga de remover la etiqueta 802.1Q, de modo que el dispositivo destino reciba una trama Ethernet estándar, sin tener idea de que la misma pasó por una infraestructura virtual.
+
+## 2) Implementacion de la siguiente topologia en packet-Tracer
+<img src="./images/Lab4/topologia/top.jpg" width="500" alt="topologia requerida" />
+
+### a) Configuracion de switches desde las computadoras 
+configuracion desde pc0 a switch1
+<img src="./images/Lab4/punto a/2026-09-16_13-53.png" width="600" alt="configuracion desde pc0" />
+
+configuracion desde pc1 a switch2
+<img src="./images/Lab4/punto a/2026-09-16_13-54.png" width="600" alt="configuracion desde pc1" />
+
+### b)Asignar contraseñas privilegiadas, de consola y vty.
+Desde pc0 a switch1
+<img src="./images/Lab4/punto b/2026-09-16_14-12.png" width="600" alt="configuracion desde pc0" />
+
+Desde pc1 a switch2
+
+
+<img src="./images/Lab4/punto b/2026-09-16_14-13.png" width="600" alt="configuracion desde pc1" />
+
+### c) Encriptacion de las contraseñas
+
+
+desde las pcs a los switches
+
+
+<img src="./images/Lab4/punto c/2026-09-16_15-03.png" width="600" alt="configuracion desde pc0" /> 
+
+
+Desde pc1 a switch2
+
+
+<img src="./images/Lab4/punto c/2026-09-16_15-03_1.png" width="600" alt="configuracion desde pc1" />
+
+
+### d) Configuracion de las redes VLAN para ambos switch según la tabla de direcciones provista.
+
+
+<img src="./images/Lab4/punto d/2026-09-16_15-06.png" width="600" alt="configuracion switch1" /> 
+<img src="./images/Lab4/punto d/2026-09-16_15-09.png" width="600" alt="configuracion switch2" />
+
+
+### e) Desconexion de  todas las interfaces que no estén siendo utilizadas
+
+
+En el switch 1
+
+
+<img src="./images/Lab4/punto e/2026-09-16_19-50.png" width="600" alt="configuracion switch1" /> 
+
+
+En el switch 2
+
+
+<img src="./images/Lab4/punto e/2026-09-16_19-51.png" width="600" alt="configuracion switch2" />
+
+### f) Guardado de la configuración 
+En el switch 1 
+
+
+<img src="./images/Lab4/punto f/2026-09-16_19-53.png" width="600" alt="configuracion switch1" /> 
+
+
+En el switch 2
+
+
+<img src="./images/Lab4/punto f/2026-09-16_19-53_1.png" width="600" alt="configuracion switch2" />
+
+
+### g) Testeo de las comunicaciones entre las computadoras usando pings
+
+
+desde Pc0 a Pc1
+
+
+<img src="./images/Lab4/punto g/2026-09-16_20-05.png" width="600" alt="ping pc0 a pc1" /> 
+
+
+desde Pc1 a Pc0
+
+
+<img src="./images/Lab4/punto g/2026-09-16_20-06.png" width="600" alt="pin pc1 a pc0" />

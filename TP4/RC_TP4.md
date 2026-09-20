@@ -98,15 +98,26 @@ Mientras tanto, el proceso de **Untagging** sería el proceso inverso: cuando la
 <img src="./images/Lab4/topologia/top.jpg" width="500" alt="topologia requerida" />
 
 ### a) Configuracion de switches desde las computadoras 
+
+
 configuracion desde pc0 a switch1
+
+
 <img src="./images/Lab4/punto a/2026-09-16_13-53.png" width="600" alt="configuracion desde pc0" />
 
 configuracion desde pc1 a switch2
+
+
 <img src="./images/Lab4/punto a/2026-09-16_13-54.png" width="600" alt="configuracion desde pc1" />
 
 ### b)Asignar contraseñas privilegiadas, de consola y vty.
+
+
 Desde pc0 a switch1
+
+
 <img src="./images/Lab4/punto b/2026-09-16_14-12.png" width="600" alt="configuracion desde pc0" />
+
 
 Desde pc1 a switch2
 

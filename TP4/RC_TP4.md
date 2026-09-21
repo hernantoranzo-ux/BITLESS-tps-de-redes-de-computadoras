@@ -254,7 +254,7 @@ Al no estar configurado como un enlace troncal (Trunk / 802.1Q), el switch no pe
 
 ## Punto 3
 
-### Se configura la tabla de direccionamiento 
+### Configuracion de la tabla de direccionamiento 
 
 <img src="./images/Lab4/Punto 3/DHCP Admin.png" width="600" alt="tabla_de_direccionamiento_admin" />
 
@@ -286,17 +286,17 @@ Obtención exitosa de IP (`10.10.10.12`) y DNS Servidor vía DHCP en el cliente 
 Obtención exitosa de IP (`10.10.10.11`) y DNS Servidor vía DHCP en el cliente Turista 2.
 
 
-### Verificación de Conectividad IP y Asignación DHCP
-
-[Ver la imprecion de la salida de los pings](./images/Lab4/Punto 3/TP4 tests de conexion.txt)
-
-### Se configura el servidor de entretenimiento
-
-
 <img src="./images/Lab4/Punto 3/IP config servidor entretenimiento.png" width="600" alt="IP_config_servidor_entretenimiento" />
 
 
 Configuración de direccionamiento IP estático (`10.10.99.10`) en el Servidor de Entretenimiento.
+
+
+### Verificación de Conectividad IP y Asignación DHCP
+
+
+[Ver la imprecion de la salida de los pings](./images/Lab4/Punto 3/TP4 tests de conexion.txt)
+
 
 
 ### Topologia de la red
@@ -308,7 +308,7 @@ Configuración de direccionamiento IP estático (`10.10.99.10`) en el Servidor d
 Diagrama de la topología de red simulada en Cisco Packet Tracer, estructurada con el switch principal (`SW Aircraft`), el router de la aeronave (`Router Aircraft`) con enlace al `ISP`, el Servidor de Entretenimiento y las laptops distribuidas por subredes (Turista, Business y Admin).
 
 
-### Se configura el servidor de entretenimiento
+### Configuracion del servidor de entretenimiento
 
 
 <img src="./images/Lab4/Punto 3/entre_ Admin.png" width="600" alt="entretenimiento_admin" />

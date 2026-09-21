@@ -100,28 +100,28 @@ Mientras tanto, el proceso de **Untagging** sería el proceso inverso: cuando la
 ### a) Configuración de switches desde las computadoras 
 
 
-Configuración desde PC0 a Switch 1
+Configuracion desde pc0 a switch1
 
 
 <img src="./images/Lab4/punto a/2026-09-16_13-53.png" width="600" alt="configuracion desde pc0" />
 
 
-Configuración desde PC1 a Switch 2
+Configuracion desde pc1 a switch2
 
 
 <img src="./images/Lab4/punto a/2026-09-16_13-54.png" width="600" alt="configuracion desde pc1" />
 
 
-### b) Asignar contraseñas privilegiadas, de consola y VTY
+### b) Asignar contraseñas privilegiadas, de consola y vty.
 
 
-Desde PC0 a Switch 1
+Desde pc0 a switch1
 
 
 <img src="./images/Lab4/punto b/2026-09-16_14-12.png" width="600" alt="configuracion desde pc0" />
 
 
-Desde PC1 a Switch 2
+Desde pc1 a switch2
 
 
 <img src="./images/Lab4/punto b/2026-09-16_14-13.png" width="600" alt="configuracion desde pc1" />
@@ -130,13 +130,13 @@ Desde PC1 a Switch 2
 ### c) Encriptación de las contraseñas
 
 
-Desde las PCs a los switches
+Desde las pcs a los switches
 
 
 <img src="./images/Lab4/punto c/2026-09-16_15-03.png" width="600" alt="configuracion desde pc0" /> 
 
 
-Desde PC1 a Switch 2
+Desde pc1 a switch2
 
 
 <img src="./images/Lab4/punto c/2026-09-16_15-03_1.png" width="600" alt="configuracion desde pc1" />
@@ -152,13 +152,13 @@ Desde PC1 a Switch 2
 ### e) Desconexión de todas las interfaces que no estén siendo utilizadas
 
 
-En el Switch 1
+En el switch 1
 
 
 <img src="./images/Lab4/punto e/2026-09-16_19-50.png" width="600" alt="configuracion switch1" /> 
 
 
-En el Switch 2
+En el switch 2
 
 
 <img src="./images/Lab4/punto e/2026-09-16_19-51.png" width="600" alt="configuracion switch2" />
@@ -166,13 +166,13 @@ En el Switch 2
 ### f) Guardado de la configuración 
 
 
-En el Switch 1 
+En el switch 1 
 
 
 <img src="./images/Lab4/punto f/2026-09-16_19-53.png" width="600" alt="configuracion switch1" /> 
 
 
-En el Switch 2
+En el switch 2
 
 
 <img src="./images/Lab4/punto f/2026-09-16_19-53_1.png" width="600" alt="configuracion switch2" />
@@ -181,13 +181,13 @@ En el Switch 2
 ### g) Testeo de las comunicaciones entre las computadoras usando pings
 
 
-Desde PC0 a PC1
+Desde Pc0 a Pc1
 
 
 <img src="./images/Lab4/punto g/2026-09-16_20-05.png" width="600" alt="ping pc0 a pc1" /> 
 
 
-Desde PC1 a PC0
+Desde Pc1 a Pc0
 
 
 <img src="./images/Lab4/punto g/2026-09-16_20-06.png" width="600" alt="pin pc1 a pc0" />
@@ -213,7 +213,7 @@ La VLAN utilizada por defecto es la **VLAN 1 (default)**. En esta VLAN vienen as
 <img src="./images/Lab4/punto j/2026-09-16_20-21.png" width="600" alt="vlan en switch 1" />
 <img src="./images/Lab4/punto j/2026-09-16_20-26.png" width="600" alt="vlan en switch 2" />
 
-Se ingresó al modo de configuración global para acceder a la interfaz Fa0/6 (donde está conectada la PC-A), se configuró en modo acceso y se la asignó a la VLAN 10 (Laboratorio).
+Se ingresó al modo de configuración global para acceder a la interfaz F0/6 (donde está conectada la PC-A), se configuró en modo acceso y se la asignó a la VLAN 10 (Laboratorio).
 
 
 ### k) Remoción de la IP de Management y configuración para funcionar en la VLAN 99
@@ -242,14 +242,14 @@ La interfaz Vlan1 quedó deshabilitada sin IP (unassigned), mientras que la inte
 <img src="./images/Lab4/punto m/2026-09-16_20-30_1.png" width="600" alt="vlan99" />
 
 
-Se ingresó a la interfaz Fa0/18 (donde está conectada la PC-B en SW2) para configurarla en modo acceso y vincularla a la VLAN 10.
+Se ingresó a la interfaz F0/18 (donde está conectada la PC-B en SW2) para configurarla en modo acceso y vincularla a la VLAN 10.
 
-### n) Verificación de conectividad entre PC-A y PC-B utilizando pings. Verificación de la conectividad entre SW1 y SW2.
+### n) Verificación de conectividad entre PC-A y PC-B utilizando pings. Verificación de la conectividad entre sw1 y sw2.
 
 <img src="./images/Lab4/punto n/2026-09-16_20-46.png" width="600" alt="vlan99" />
 <img src="./images/Lab4/punto n/2026-09-16_20-48.png" width="600" alt="vlan99" />
 
-Ambas pruebas resultan fallidas debido a que el enlace que interconecta a SW1 y SW2 (Fa0/1) se encuentra actualmente configurado en el modo de acceso por defecto asignado a la VLAN 1.
+Ambas pruebas resultan fallidas debido a que el enlace que interconecta a SW1 y SW2 (F0/1) se encuentra actualmente configurado en el modo de acceso por defecto asignado a la VLAN 1.
 Al no estar configurado como un enlace troncal (Trunk / 802.1Q), el switch no permite la transmisión de tramas pertenecientes a otras VLANs (como la VLAN 10 de las PCs o la VLAN 99 de administración) a través del enlace inter-switch. Esto provoca que ni las computadoras de la VLAN 10 puedan comunicarse entre sí, ni los switches puedan enviarse tráfico de gestión ICMP.
 
 ## Punto 3

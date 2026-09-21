@@ -295,7 +295,7 @@ Configuración de direccionamiento IP estático (`10.10.99.10`) en el Servidor d
 ### Verificación de Conectividad IP y Asignación DHCP
 
 
-[Ver la imprecion de la salida de los pings](./images/Lab4/Punto 3/TP4 tests de conexion.txt)
+[Ver la impresion de la salida de los pings](<./images/Lab4/Punto 3/TP4 tests de conexion.txt>)
 
 
 
@@ -331,7 +331,9 @@ Prueba de acceso web al portal *AirConnect Entertainment* desde la subred Turist
 
 ### Configuración del Router Principal y Switch de la Aeronave
 
-[Ver configuracion router del avion y el Swich](./images/Lab4/Punto 3/TP4_console_registres.txt)
+
+[Ver configuración router del avión y el Switch](<./images/Lab4/Punto 3/TP4_console_registres.txt>)
+
 
 ## Conclusiones
 

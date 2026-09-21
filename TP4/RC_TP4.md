@@ -100,17 +100,19 @@ Mientras tanto, el proceso de **Untagging** sería el proceso inverso: cuando la
 ### a) Configuracion de switches desde las computadoras 
 
 
-configuracion desde pc0 a switch1
+Configuracion desde pc0 a switch1
 
 
 <img src="./images/Lab4/punto a/2026-09-16_13-53.png" width="600" alt="configuracion desde pc0" />
 
-configuracion desde pc1 a switch2
+
+Configuracion desde pc1 a switch2
 
 
 <img src="./images/Lab4/punto a/2026-09-16_13-54.png" width="600" alt="configuracion desde pc1" />
 
-### b)Asignar contraseñas privilegiadas, de consola y vty.
+
+### b) Asignar contraseñas privilegiadas, de consola y vty.
 
 
 Desde pc0 a switch1
@@ -124,10 +126,11 @@ Desde pc1 a switch2
 
 <img src="./images/Lab4/punto b/2026-09-16_14-13.png" width="600" alt="configuracion desde pc1" />
 
+
 ### c) Encriptacion de las contraseñas
 
 
-desde las pcs a los switches
+Desde las pcs a los switches
 
 
 <img src="./images/Lab4/punto c/2026-09-16_15-03.png" width="600" alt="configuracion desde pc0" /> 
@@ -161,6 +164,8 @@ En el switch 2
 <img src="./images/Lab4/punto e/2026-09-16_19-51.png" width="600" alt="configuracion switch2" />
 
 ### f) Guardado de la configuración 
+
+
 En el switch 1 
 
 
@@ -176,19 +181,20 @@ En el switch 2
 ### g) Testeo de las comunicaciones entre las computadoras usando pings
 
 
-desde Pc0 a Pc1
+Desde Pc0 a Pc1
 
 
 <img src="./images/Lab4/punto g/2026-09-16_20-05.png" width="600" alt="ping pc0 a pc1" /> 
 
 
-desde Pc1 a Pc0
+Desde Pc1 a Pc0
 
 
 <img src="./images/Lab4/punto g/2026-09-16_20-06.png" width="600" alt="pin pc1 a pc0" />
 
 
 ### h) Creación de VLANs en ambos switches
+
 
 <img src="./images/Lab4/punto h/2026-09-16_20-12.png" width="600" alt="vlan en switch 1" />
 <img src="./images/Lab4/punto h/2026-09-16_20-12_1.png" width="600" alt="vlan en switch 2" />
@@ -245,3 +251,96 @@ Se ingresó a la interfaz f0/18 (donde está conectada la PC-B en sw2) para conf
 
 Ambas pruebas resultan fallidas debido a que el enlace que interconecta a sw1 y sw2 (f0/1) se encuentra actualmente configurado en el modo de acceso por defecto asignado a la VLAN 1.
 Al no estar configurado como un enlace troncal (Trunk / 802.1Q), el switch no permite la transmisión de tramas pertenecientes a otras VLANs (como la VLAN 10 de las PCs o la VLAN 99 de administración) a través del enlace inter-switch. Esto provoca que ni las computadoras de la VLAN 10 puedan comunicarse entre sí, ni los switches puedan enviarse tráfico de gestión ICMP.
+
+## Punto 3
+
+### Se configura la tabla de direccionamiento 
+
+<img src="./images/Lab4/Punto 3/DHCP Admin.png" width="600" alt="tabla_de_direccionamiento_admin" />
+
+
+Confirmación de la asignación dinámica de dirección IP por DHCP (`10.10.99.11`) para el host de Administración.
+
+
+<img src="./images/Lab4/Punto 3/DHCP business 1.png" width="600" alt="tabla_de_direccionamiento_business1" />
+
+
+Asignación dinámica de dirección IP por DHCP (`10.10.20.12`) en el cliente Business 1.
+
+
+<img src="./images/Lab4/Punto 3/DHCP business 2.png" width="600" alt="tabla_de_direccionamiento_business2" />
+
+
+Asignación dinámica de dirección IP por DHCP (`10.10.20.11`) en el cliente Business 2.
+
+
+<img src="./images/Lab4/Punto 3/DHCP turista 1.png" width="600" alt="tabla_de_direccionamiento_turista1" /> 
+
+
+Obtención exitosa de IP (`10.10.10.12`) y DNS Servidor vía DHCP en el cliente Turista 1.
+
+
+<img src="./images/Lab4/Punto 3/DHCP turista 2.png" width="600" alt="tabla_de_direccionamiento_turista2" /> 
+
+
+Obtención exitosa de IP (`10.10.10.11`) y DNS Servidor vía DHCP en el cliente Turista 2.
+
+
+### Verificación de Conectividad IP y Asignación DHCP
+
+[Ver la imprecion de la salida de los pings](./images/Lab4/Punto 3/TP4 tests de conexion.txt)
+
+### Se configura el servidor de entretenimiento
+
+
+<img src="./images/Lab4/Punto 3/IP config servidor entretenimiento.png" width="600" alt="IP_config_servidor_entretenimiento" />
+
+
+Configuración de direccionamiento IP estático (`10.10.99.10`) en el Servidor de Entretenimiento.
+
+
+### Topologia de la red
+
+
+<img src="./images/Lab4/Punto 3/topologia.png" width="600" alt="Topologia" />
+
+
+Diagrama de la topología de red simulada en Cisco Packet Tracer, estructurada con el switch principal (`SW Aircraft`), el router de la aeronave (`Router Aircraft`) con enlace al `ISP`, el Servidor de Entretenimiento y las laptops distribuidas por subredes (Turista, Business y Admin).
+
+
+### Se configura el servidor de entretenimiento
+
+
+<img src="./images/Lab4/Punto 3/entre_ Admin.png" width="600" alt="entretenimiento_admin" />
+
+
+Verificación de conectividad y navegación HTTP exitosa hacia el Servidor de Entretenimiento desde el equipo Admin.
+
+
+<img src="./images/Lab4/Punto 3/Entretenimiento businesss.png" width="600" alt="entretenimiento_business" />
+
+
+Prueba de acceso web al portal *AirConnect Entertainment* desde la subred Business (cliente Business 1).
+
+
+<img src="./images/Lab4/Punto 3/entretenimiento turista.png" width="600" alt="entretenimiento_turista" />
+
+
+Prueba de acceso web al portal *AirConnect Entertainment* desde la subred Turista (cliente Turista 1).
+
+
+### Configuración del Router Principal y Switch de la Aeronave
+
+[Ver configuracion router del avion y el Swich](./images/Lab4/Punto 3/TP4_console_registres.txt)
+
+## Conclusiones
+
+En la primera parte, al trabajar con la topología entre los dos switches, pudimos comprobar lo crítico que es configurar adecuadamente los enlaces inter-switch. El problema de conectividad analizado en el punto 2.n nos mostró claramente la importancia de los puertos troncales: aunque las VLANs $10$ y $99$ estaban bien creadas en ambos dispositivos, las tramas etiquetadas mediante el estándar IEEE 802.1Q no podían atravesar el enlace F0/1 porque este se encontraba en modo acceso por defecto. La posterior activación del modo trunk permitió restablecer la comunicación inter-VLAN.
+
+En la segunda parte, aplicada al escenario de la aeronave, logramos integrar múltiples servicios sobre una misma infraestructura física:
+
+- Segmentación con VLANs y Subinterfaces: Se aisló el tráfico de cada grupo de usuarios (Turista, Business y Admin) mediante subinterfaces en el router usando el esquema Router-on-a-Stick.
+
+- Asignación Dinámica (DHCP): Se verificó que cada pool de DHCP entregara las direcciones IP, puertas de enlace y servidores DNS correspondientes al rango de cada clase.
+
+- Control de Acceso y Salida a Internet (ACL y NAT): Mediante la ACL extendida (100) logramos restringir a la clase Turista para que solo pueda consumir el contenido del servidor web local (10.10.99.10), bloqueando el tráfico hacia el exterior. Por otro lado, la clase Business y Administración lograron navegar hacia Internet mediante la traducción de direcciones por sobrecarga (NAT/PAT) configurada en la interfaz de salida del router.Por otro lado, la configuración de los routers ISP permitió validar la conectividad con el mundo exterior y la correcta implementación de reglas de firewall para permitir o denegar el tráfico según la necesidad de cada red.

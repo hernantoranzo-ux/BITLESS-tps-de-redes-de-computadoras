@@ -186,3 +186,62 @@ desde Pc1 a Pc0
 
 
 <img src="./images/Lab4/punto g/2026-09-16_20-06.png" width="600" alt="pin pc1 a pc0" />
+
+
+### h) Creación de VLANs en ambos switches
+
+<img src="./images/Lab4/punto h/2026-09-16_20-12.png" width="600" alt="vlan en switch 1" />
+<img src="./images/Lab4/punto h/2026-09-16_20-12_1.png" width="600" alt="vlan en switch 2" />
+
+
+### i) Visualización de la lista de VLANs 
+
+<img src="./images/Lab4/punto i/2026-09-16_20-14.png" width="600" alt="sw1" />
+<img src="./images/Lab4/punto i/2026-09-16_20-14_1.png" width="600" alt="sw2" />
+
+La VLAN utilizada por defecto es la **VLAN 1 (default)**. En esta VLAN vienen asignados incialmente todos los puertos del switch (desde Fa0/1 hasta Fa0/24 y Gig0/1, Gig0/2), tal como se visualiza en la salida del comando.
+
+
+### j) Asignación de PC-A a la VLAN Laboratorio
+
+<img src="./images/Lab4/punto j/2026-09-16_20-21.png" width="600" alt="vlan en switch 1" />
+<img src="./images/Lab4/punto j/2026-09-16_20-26.png" width="600" alt="vlan en switch 2" />
+
+Se ingresó al modo de configuración global para acceder a la interface f0/6 (donde está conectada la PC-A), se configuró en modo acceso y se la asignó a la VLAN 10 (Laboratorio).
+
+
+### k) Remoción de la ip de Management y configurarla para funcionar en la VLAN 99
+
+<img src="./images/Lab4/punto k/2026-09-16_20-30.png" width="600" alt="vlan1 a vlan99" />
+
+Se procedió a remover la dirección IP de gestión de la VLAN 1 y se configuró la nueva dirección IP de administración en la VLAN 99.
+
+
+### l) Verificación del estado de la VLAN y el estado de las interfaces
+
+<img src="./images/Lab4/punto l/2026-09-16_20-32.png" width="600" alt="vlan99" />
+<img src="./images/Lab4/punto l/2026-09-16_20-33_1.png" width="600" alt="vlan99" />
+<img src="./images/Lab4/punto l/2026-09-16_20-33.png" width="600" alt="vlan99" />
+<img src="./images/Lab4/punto l/2026-09-16_20-34.png" width="600" alt="vlan99" />
+
+
+Los puertos Fa0/1 y Fa0/6/Fa0/18 se encuentran en estado Status: up / Protocol: up, lo que confirma conexión física y operativa activa.
+
+La interfaz Vlan1 quedó deshabilitada sin IP (unassigned), mientras que la interfaz Vlan99 quedó configurada con su IP de gestión y en estado up/up, permitiendo la administración remota de los switches.
+
+### m) Asignación de la PC-B a la VLAN Laboratorio en el sw2
+
+<img src="./images/Lab4/punto m/2026-09-16_20-22.png" width="600" alt="vlan99" />
+<img src="./images/Lab4/punto m/2026-09-16_20-26_1.png" width="600" alt="vlan99" />
+<img src="./images/Lab4/punto m/2026-09-16_20-30_1.png" width="600" alt="vlan99" />
+
+
+Se ingresó a la interfaz f0/18 (donde está conectada la PC-B en sw2) para configurarla en modo acceso y vincularla a la VLAN 10.
+
+### n) Verificación de conectividad entre PC-A y PC-B utilizando pings. Verificación de la conectividad entre sw1 y sw2.
+
+<img src="./images/Lab4/punto n/2026-09-16_20-46.png" width="600" alt="vlan99" />
+<img src="./images/Lab4/punto n/2026-09-16_20-48.png" width="600" alt="vlan99" />
+
+Ambas pruebas resultan fallidas debido a que el enlace que interconecta a sw1 y sw2 (f0/1) se encuentra actualmente configurado en el modo de acceso por defecto asignado a la VLAN 1.
+Al no estar configurado como un enlace troncal (Trunk / 802.1Q), el switch no permite la transmisión de tramas pertenecientes a otras VLANs (como la VLAN 10 de las PCs o la VLAN 99 de administración) a través del enlace inter-switch. Esto provoca que ni las computadoras de la VLAN 10 puedan comunicarse entre sí, ni los switches puedan enviarse tráfico de gestión ICMP.

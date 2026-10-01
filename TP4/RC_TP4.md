@@ -33,6 +33,28 @@ Septiembre 2026
    - [b) Qué es una VLAN y su clasificación](#b-qué-es-una-vlan-y-su-clasificación)
    - [c) El protocolo IEEE 802.1Q](#c-el-protocolo-ieee-8021q)
    - [d) Qué es el Tagging](#d-qué-es-el-tagging)
+2. [Implementación de la siguiente topología en Packet Tracer](#2-implementación-de-la-siguiente-topología-en-packet-tracer)
+   - [a) Configuración de switches desde las computadoras](#a-configuración-de-switches-desde-las-computadoras)
+   - [b) Asignar contraseñas privilegiadas, de consola y vty](#b-asignar-contraseñas-privilegiadas-de-consola-y-vty)
+   - [c) Encriptación de las contraseñas](#c-encriptación-de-las-contraseñas)
+   - [d) Configuración de las redes VLAN para ambos switches según la tabla de direcciones provista](#d-configuración-de-las-redes-vlan-para-ambos-switches-según-la-tabla-de-direcciones-provista)
+   - [e) Desconexión de todas las interfaces que no estén siendo utilizadas](#e-desconexión-de-todas-las-interfaces-que-no-estén-siendo-utilizadas)
+   - [f) Guardado de la configuración](#f-guardado-de-la-configuración)
+   - [g) Testeo de las comunicaciones entre las computadoras usando pings](#g-testeo-de-las-comunicaciones-entre-las-computadoras-usando-pings)
+   - [h) Creación de VLANs en ambos switches](#h-creación-de-vlans-en-ambos-switches)
+   - [i) Visualización de la lista de VLANs](#i-visualización-de-la-lista-de-vlans)
+   - [j) Asignación de PC-A a la VLAN Laboratorio](#j-asignación-de-pc-a-a-la-vlan-laboratorio)
+   - [k) Remoción de la IP de Management y configuración para funcionar en la VLAN 99](#k-remoción-de-la-ip-de-management-y-configuración-para-funcionar-en-la-vlan-99)
+   - [l) Verificación del estado de la VLAN y el estado de las interfaces](#l-verificación-del-estado-de-la-vlan-y-el-estado-de-las-interfaces)
+   - [m) Asignación de la PC-B a la VLAN Laboratorio en sw2](#m-asignación-de-la-pc-b-a-la-vlan-laboratorio-en-sw2)
+   - [n) Verificación de conectividad entre PC-A y PC-B utilizando pings. Verificación de la conectividad entre sw1 y sw2](#n-verificación-de-conectividad-entre-pc-a-y-pc-b-utilizando-pings-verificación-de-la-conectividad-entre-sw1-y-sw2)
+3. [Simulación del despliegue de una red LAN](#3-simulación-del-despliegue-de-una-red-lan)
+   - [Configuración de la tabla de direccionamiento](#configuración-de-la-tabla-de-direccionamiento)
+   - [Verificación de Conectividad IP y Asignación DHCP](#verificación-de-conectividad-ip-y-asignación-dhcp)
+   - [Topología de la red](#topología-de-la-red)
+   - [Configuración del servidor de entretenimiento](#configuración-del-servidor-de-entretenimiento)
+   - [Configuración del Router Principal y Switch de la Aeronave](#configuración-del-router-principal-y-switch-de-la-aeronave)
+4. [Conclusiones](#conclusiones)
 
 ---
 
@@ -252,7 +274,7 @@ Se ingresó a la interfaz f0/18 (donde está conectada la PC-B en sw2) para conf
 Ambas pruebas resultan fallidas debido a que el enlace que interconecta a sw1 y sw2 (f0/1) se encuentra actualmente configurado en el modo de acceso por defecto asignado a la VLAN 1.
 Al no estar configurado como un enlace troncal (Trunk / 802.1Q), el switch no permite la transmisión de tramas pertenecientes a otras VLANs (como la VLAN 10 de las PCs o la VLAN 99 de administración) a través del enlace inter-switch. Esto provoca que ni las computadoras de la VLAN 10 puedan comunicarse entre sí, ni los switches puedan enviarse tráfico de gestión ICMP.
 
-## Punto 3
+## 3) Simulación del despliegue de una red LAN
 
 ### Configuración de la tabla de direccionamiento 
 

@@ -33,10 +33,21 @@ Octubre 2026
    - [b) Relación entre ICMP e IP](#b-relación-entre-icmp-e-ip)
    - [c) Ping, Echo Request y Echo Reply](#c-ping-echo-request-y-echo-reply)
    - [d) Información mínima de un mensaje ICMP de tipo Echo](#d-información-mínima-de-un-mensaje-icmp-de-tipo-echo)
+
+2. 
+
 3. [TCP y UDP "a mano" con ncat](#3-tcp-y-udp-a-mano-con-ncat)
-   - [a) Comunicación TCP](#a-comunicación-tcp)
-   - [b) Comunicación UDP](#b-comunicación-udp)
-   - [c) Diferencias observables entre TCP y UDP](#c-diferencias-observables-entre-tcp-y-udp)
+   - [Conceptos previos](#conceptos-previos)
+      - [a) Establecimiento de conexión](#a-establecimiento-de-conexión)
+      - [b) Puertos e identificación](#b-puertos-e-identificación)
+      - [c) Procesos en escucha](#c-procesos-en-escucha)
+   - [Análisis de capturas](#análisis-de-capturas)
+      - [a) Sincronización inicial](#a-sincronización-inicial)
+      - [b) Confirmación de entrega](#b-confirmación-de-entrega)
+      - [c) Tamaño de cabeceras](#c-tamaño-de-cabeceras)
+      - [d) Cierre de conexión](#d-cierre-de-conexión)
+      - [e) Confiabilidad y paquetes extra](#e-confiabilidad-y-paquetes-extra)
+      - [f) Rechazo de conexión](#f-rechazo-de-conexión)  
 
 ---
 
@@ -100,21 +111,21 @@ continuacion punto 1 y 2
 
 ## Conceptos previos:
 
-### a) ¿Qué significa "establecer una conexión"? ¿Dónde "existe" una conexión TCP: en los cables, en los routers o en los extremos?
+### a) Establecimiento de conexión
 
  Establecer una conexión significa que dos extremos (computadoras o servidores) realizan un acuerdo (handshake) para sincronizar parametros antes de enviar datos. Esta conexión existe de forma lógica únicamente entre los sistemas operativos de los extremos, por tanto, cualquier intermediario como cables o routers solo enrutan paquetes sin conocer este estado.
 
- ### b) ¿Qué es un puerto? ¿Qué identifica el par (IP, puerto)?
+ ### b) Puertos e identificación
 
 Un puerto es un identificador lógico que dirige el tráfico hacia una aplicación específica. El par (IP, puerto) identifica de manera unica a un proceso particular ejecutándose en una máquina determinada dentro de la red.
 
-### c) ¿Qué significa que un proceso esté "escuchando" en un puerto?
+### c) Procesos en escucha
 
 Significa que el programa está activo, asociado a un puerto local por el sistema operativo, y a la espera de recibir peticiones de conexión entrantes.
 
 ## Análisis de capturas:
 
-### a) 
+### a) Sincronización inicial
 
 Al ejecutar el comando del cliente TCP, se generaron tres paquetes de control automáticamente antes de escribir ningún mensaje. Esto corresponde al Three-Way Handshake (sincronización inicial), donde se observan los segmentos SYN, SYN-ACK y ACK.
 
@@ -126,7 +137,7 @@ Por el contrario, al ejecutar el cliente UDP no se registró ningún tráfico en
 
 ![Primer mensaje UDP](./images/punto%203/udp_nohandshake.png)
 
-### b)
+### b) Confirmación de entrega
 
 En la comunicación UDP, cada mensaje enviado generó exactamente un datagrama. En este protocolo no existe un mecanismo de confirmación como (ACK) a nivel de transporte; no hay confirmaciones automáticas de llegada.
 
@@ -136,7 +147,7 @@ Por el contrario, en TCP, cada mensaje enviado genera al menos dos segmentos en 
 
 ![Mensaje TCP con ACK](./images/punto%203/tcp_mensaje.png)
 
-### c)
+### c) Tamaño de cabeceras
 
 Al inspeccionar los detalles del paquete TCP, la cabecera tiene un tamaño de 32 bytes (20 bytes de base más 12 bytes de opciones).
 
@@ -146,7 +157,7 @@ Por su parte, la cabecera UDP ocupa únicamente 8 bytes. Esta gran diferencia de
 
 ![Cabecera UDP](./images/punto%203/udp_header.png)
 
-### d)
+### d) Cierre de conexión
 
 Al interrumpir el programa en TCP, se registró un intercambio de paquetes de control en la red para finalizar la sesión de manera ordenada. Se generaron segmentos con las banderas `[FIN, ACK]` indicando el fin de la transmisión, seguidos de las confirmaciones `[ACK]`.
 
@@ -156,16 +167,18 @@ Por el contrario, al cerrar el cliente UDP, Wireshark no detectó ningún tráfi
 
 ![FIN udp](./images/punto%203/udp_cierre.png)
 
-### e)
+### e) Confiabilidad y paquetes extra
 
 Para enviar una frase, UDP requirió unicamente un paquete, el datagrama con los datos. TCP requirió un mínimo de dos paquetes en el intercambio directo, el segmento con los datos y el segmento ACK de respuesta, además del costo fijo de tres paquetes iniciales para establecer la conexión. 
 
 Con los paquetes extra en TCP se "compra" confiabilidad. El mecanismo de acuse de recibo `[ACK]` garantiza que el mensaje llegó a destino. Además, la cabecera más robusta asegura el orden de entrega, evita duplicados y maneja el control de flujo y congestión.
 
-### f)
+### f) Rechazo de conexión
 
 Al intentar comunicarse sin servidores a la escucha, el sistema operativo rechaza activamente el tráfico de ambos protocolos utilizando mecanismos diferentes:
 * **En TCP**, el cliente envía un paquete de sincronización (SYN) y el sistema responde inmediatamente con un segmento que contiene la bandera `[RST, ACK]` (Reset), abortando la conexión.
 * **En UDP**, el cliente envía el datagrama a la red, pero al no haber un proceso escuchando en ese puerto, el sistema operativo responde enviando un mensaje de error a través del protocolo ICMP con el código "Destination unreachable (Port unreachable)".
 
 ![Rechazo de conexion sin servidores](./images/punto%203/puertos_cerrados.png)
+
+---

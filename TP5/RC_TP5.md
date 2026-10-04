@@ -182,3 +182,28 @@ Al intentar comunicarse sin servidores a la escucha, el sistema operativo rechaz
 ![Rechazo de conexion sin servidores](./images/punto%203/puertos_cerrados.png)
 
 ---
+
+## 4) Servidor TCP - TP5 Redes de Computadoras
+
+Para realizar este punto, utilizamos los script recomendados en la guia, en dos consolas se ejecuto el script del servidor y del cliente.
+
+![Server](<images/punto 3/Punto4_Server.png>)
+
+![Cliente](<images/punto 3/Punto4_Cliente.png>)
+
+Para capturar y analizar el tráfico de red utilizamos Wireshark con el filtro "tcp.port == 12000".
+
+![Wireshark](<images/punto 3/Punto4_Wireshark.png>)
+
+Y con la informacion se completa siguiente tabla
+
+| Llamada | ¿Dónde se ejecuta? | ¿Genera tráfico? | Segmentos que  observan |
+| :--- | :--- | :--- | :--- |
+| **`socket()`** | Servidor y cliente | **No** | **Ninguno**. Llamada local en el sistema operativo para instanciar la estructura de datos del socket. |
+| **`bind()`** | Servidor | **No** | **Ninguno**. Asocia localmente la IP `127.0.0.1` y el puerto `12000` al socket del servidor. |
+| **`listen()`** | Servidor | **No** | **Ninguno**. Configura el socket en modo pasivo en el SO para escuchar conexiones. |
+| **`connect()`** | Cliente | **Sí** | **Three-Way Handshake (Establecimiento de conexión)**:<br>• **Pkt 1:** `47272 → 12000 [SYN] Seq=0 Win=65495 Len=0`<br>• **Pkt 2:** `12000 → 47272 [SYN, ACK] Seq=0 Ack=1 Win=65483 Len=0`<br>• **Pkt 3:** `47272 → 12000 [ACK] Seq=1 Ack=1 Win=65536 Len=0` |
+| **`accept()`** | Servidor | **No**  | **Ninguno**. La función está bloqueada en la aplicación a la espera de conexiones; retorna cuando el SO completa el *handshake* tras procesar el Pkt 3. |
+| **`sendall()`** | Servidor  | **Sí** | **Envío de datos de aplicación**:<br>• **Pkt 4:** `47272 → 12000 [PSH, ACK] Seq=1 Ack=1 Len=22` (Cliente envía mensaje)<br>• **Pkt 6:** `12000 → 47272 [PSH, ACK] Seq=1 Ack=23 Len=32` (Servidor envía respuesta) |
+| **`recv()`** | Servidor  | **No**  | **Ninguno**. Lee los datos acumulados en el buffer del SO. La pila TCP del sistema operativo genera los ACK automáticamente:<br>• **Pkt 5:** `12000 → 47272 [ACK] Seq=1 Ack=23` (Servidor confirma Pkt 4)<br>• **Pkt 7:** `47272 → 12000 [ACK] Seq=23 Ack=33` (Cliente confirma Pkt 6) |
+| **`close()`** | Ambos | **Sí** | **Cierre ordenado de la conexión**:<br>• **Pkt 8:** `47272 → 12000 [FIN, ACK] Seq=23 Ack=33` (Cliente inicia cierre)<br>• **Pkt 9:** `12000 → 47272 [FIN, ACK] Seq=33 Ack=24` (Servidor responde con FIN/ACK)<br>• **Pkt 10:** `47272 → 12000 [ACK] Seq=24 Ack=34` (Confirmación final del cliente) |

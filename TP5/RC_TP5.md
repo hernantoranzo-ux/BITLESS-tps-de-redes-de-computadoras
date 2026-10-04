@@ -103,9 +103,131 @@ La información mínima que contiene un mensaje **ICMP** de tipo **Echo** es:
 
 ---
 
-continuacion punto 1 y 2
 
----
+
+
+## Tabla con detalles de detalles del echo Request realizado 
+<img src="./images/punto%201/tabla.jpg">
+
+--- 
+
+
+### a)Direccion MAC y comparacion frente a IP
+
+
+MAC destino de echo a 8.8.8.8
+
+
+<img src="./images/punto%201/macDeEcho.png">
+
+mac destino de gateway
+
+<img src="./images/punto%201/macDeGateway.jpg">
+
+La MAC destino del Echo Request enviado a 8.8.8.8, ¿es la MAC de 8.8.8.8? ¿De qué equipo es?
+
+La direccion MAC no es de 8.8.8.8 sino que es la direccion mac del router que esta en la misma LAN.
+
+ 
+
+Comparando las macs de destino en ambos pings vemos que es la misma.
+
+¿Qué conclusión se saca sobre el alcance de una dirección MAC frente al de una dirección IP?
+
+ La conclusión es que el alcance de las macs es reducido a redes locales, a diferencia de las ips que pueden viajar por fuera de la red local a internet.
+
+### b) Comparacion del request y reply de echo
+veremos los campos que cambian en ethernet, IP e ICMP
+#### En ethernet:
+* se puede ver que se intercambiaron las direcciones mac de destino y origen en el request como en el reply
+
+
+request
+
+
+<img src="./images/punto%201/ethernet-1.png">
+
+
+reply
+
+<img src="./images/punto%201/ethernet-2.png">
+
+#### En IP se cambiaron:
+
+* la ip origen es la de echo request y la destino es la del gateway
+
+* los valores de identificación
+
+* el time to live es el doble en el request que en el reply
+
+* el header checksum cambio
+
+* el source addres y destination address se intercambiaron en echo y reply
+
+
+request
+
+<img src="./images/punto%201/IP-1.png">
+
+reply
+
+<img src="./images/punto%201/IP-2.png">
+
+#### En ICMP se cambiaron:
+
+•	cambiaron el campo type
+
+•	cambio el checksum 
+
+•	el request tiene un campo response frame
+
+•	el reply tiene un campo request frame con el valor de response frame mas uno de request
+
+•	reply tiene un campo response time
+
+request
+
+<img src="./images/punto%201/ICMP-1.png">
+
+reply
+
+<img src="./images/punto%201/ICMP-2.png">
+
+¿Por qué tienen sentido estos cambios?
+
+Los cambios tienen sentido porque los paquetes viajan hacia el router y deben retornar al origen, por lo cual deben revertirse algunos campos para realizar el camino inverso de vuelta
+
+¿Por qué el identificador y el número de secuencia se mantienen?
+
+El identificador y el número de secuencia se mantienen porque permite la vinculación univoca de cada reply a su request respectiva
+
+   ### c) Sobre el payload:
+
+
+El payload esta al final de las secuencias de los paquetes, tiene 32 bytes y contiene el abecedario y un hi
+
+payload:
+<img src="./images/punto%201/payload.png">
+(es el mismo tanto en reply como request)
+
+Respecto a las diferencias entre como manejan el payload un SO windows  linux:
+
+La diferencia entre una pc con Windows y Linux muestra que la implementación del comando ping y la carga útil dependen del sistema operativo, aunque el estándar ICMP funciona igual a nivel de red
+
+### d) Sobre el TTL:
+
+El valor de TTL en echo del request a 8.8.8.8 es de 128 y en el reply es de 117.
+
+No son iguales porque cada vez que un paquete ip atraviesa un router, el router decrementa el valor del campo TTL en almenos una unidad antes de reenviarlo y como el paquete viajo por varios routers desde internet a la computadora de vuelta el TTL se reduce en el regreso
+
+### e) Representacion del encapsulamiento como "cajas dentro de cajas" del paquete
+
+
+<img src="./images/punto%201/encapsulamiento.png">
+---continuacion punto 2---
+
+
+
 
 ## 3) TCP y UDP "a mano" con ncat
 

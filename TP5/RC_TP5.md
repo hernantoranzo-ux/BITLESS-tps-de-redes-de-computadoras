@@ -34,7 +34,12 @@ Octubre 2026
    - [c) Ping, Echo Request y Echo Reply](#c-ping-echo-request-y-echo-reply)
    - [d) Información mínima de un mensaje ICMP de tipo Echo](#d-información-mínima-de-un-mensaje-icmp-de-tipo-echo)
 
-2. 
+2. [Protocolo ARP](#2-protocolo-arp)
+   - [a) Qué es ARP y su ubicación en el modelo en capas](#a-qué-es-arp-y-su-ubicación-en-el-modelo-en-capas)
+   - [b) ARP Request y ARP Reply](#b-arp-request-y-arp-reply)
+   - [c) Caché ARP](#c-caché-arp)
+   - [d) Procedimiento de resolución de direcciones](#d-procedimiento-de-resolución-de-direcciones)
+   - [e) Inspección de la caché ARP y verificación del gateway](#e-inspección-de-la-caché-arp-y-verificación-del-gateway)
 
 3. [TCP y UDP "a mano" con ncat](#3-tcp-y-udp-a-mano-con-ncat)
    - [Conceptos previos](#conceptos-previos)
@@ -48,6 +53,7 @@ Octubre 2026
       - [d) Cierre de conexión](#d-cierre-de-conexión)
       - [e) Confiabilidad y paquetes extra](#e-confiabilidad-y-paquetes-extra)
       - [f) Rechazo de conexión](#f-rechazo-de-conexión)  
+4. [Servidor TCP - TP5 Redes de Computadoras](#4-servidor-tcp---tp5-redes-de-computadoras)
 
 ---
 
@@ -103,7 +109,50 @@ La información mínima que contiene un mensaje **ICMP** de tipo **Echo** es:
 
 ---
 
-continuacion punto 1 y 2
+## 2) Protocolo ARP
+
+### a) Qué es ARP y su ubicación en el modelo en capas
+
+**ARP (Address Resolution Protocol)** resuelve el problema de la traducción de direcciones: permite a un equipo descubrir de forma dinámica la dirección MAC física asociada a una dirección IP conocida dentro de la misma red local. Sin ARP, los dispositivos sabrían a qué IP enviar un paquete, pero no podrían construir la trama Ethernet física para entregárselo en la LAN.
+
+La ubicación de ARP en el modelo en capas (OSI / TCP-IP) es un tema de debate clásico en redes, ya que presenta características de ambas capas:
+
+**Argumentos para ubicarlo en la Capa 2 (Enlace de datos):**
+- **Encapsulación directa:** Los mensajes ARP se empaquetan directamente dentro de una trama Ethernet (utilizando el campo `EtherType = 0x0806`), sin agregar una cabecera IP ni viajar dentro de un paquete IP.
+- **Alcance local:** Opera exclusivamente dentro del dominio de difusión de la red local (LAN) usando direcciones de difusión MAC (`ff:ff:ff:ff:ff:ff`) y no puede ser encaminado a través de un router.
+
+**Argumentos para ubicarlo en la Capa 3 (Red) o como "Capa 2.5":**
+- **Función de servicio a IP:** Su único propósito existe en función de IP (Capa 3), ya que maneja información de direcciones de red (IPv4) para resolverlas.
+- **Protocolo auxiliar/control:** Al igual que otros protocolos de control que asisten a la capa de red, actúa como una interfaz o puente intermedio entre la Capa 2 y la Capa 3. Por esta razón, gran parte de la literatura técnica lo clasifica en la **Capa 3** o lo define informalmente como un protocolo de **Capa 2.5**.
+
+### b) ARP Request y ARP Reply
+
+Un **ARP Request (Solicitud ARP)** es el mensaje que emite un host cuando conoce la dirección IP de destino en su red local pero requiere descubrir su dirección MAC física para empaquetar la trama Ethernet. Esta solicitud se envía mediante difusión (*broadcast*) a todas las estaciones de la red local utilizando la dirección MAC `ff:ff:ff:ff:ff:ff`, dejando el campo de la dirección física buscada en ceros.
+
+Por otro lado, un **ARP Reply (Respuesta ARP)** es la contestación emitida únicamente por el equipo cuya dirección IP coincide con la consultada, informando su dirección MAC física. A diferencia de la solicitud, la respuesta se envía de forma directa y monodifusión (*unicast*) a la máquina consultante, ya que el destinatario aprendió la MAC de origen a partir de la solicitud previa.
+
+### c) Caché ARP
+
+La **caché ARP** es una tabla o memoria temporal mantenida por el sistema operativo de cada equipo que guarda las correspondencias aprendidas entre direcciones IP y direcciones MAC físicas de la red local. Existe para optimizar el rendimiento de la red y evitar la saturación por tráfico de difusión; de este modo, cuando una computadora necesita enviar datos a una IP, primero consulta su propia tabla para obtener la MAC correspondiente en lugar de emitir un *ARP Request* por difusión cada vez que envía un paquete. Dado que las configuraciones de red pueden cambiar, estas entradas tienen un tiempo de expiración dinámico para refrescarse periódicamente y mantener la información actualizada.
+
+### d) Procedimiento de resolución de direcciones
+
+El procedimiento que sigue un equipo para resolver esta situación consta de los siguientes pasos:
+
+- **Consulta en la caché local:** En primer lugar, el sistema operativo consulta su **tabla o caché ARP local** para verificar si ya existe una entrada guardada con la dirección MAC asociada a esa IP. Si la dirección física se encuentra en la caché, se toma de forma inmediata y se construye la trama Ethernet para transmitir los datos.
+- **Solicitud y respuesta ARP:** Si la dirección MAC no está registrada en la caché, el equipo emite una solicitud **ARP Request** mediante difusión (*broadcast*) dirigida a toda la red local (`ff:ff:ff:ff:ff:ff`), preguntando cuál de las máquinas posee la IP de destino. La computadora que reconoce la dirección IP como propia responde con un **ARP Reply** en modo monodifusión (*unicast*), entregando su dirección MAC física. Al recibir esta respuesta, la máquina emisora guarda la relación en su caché ARP para futuras comunicaciones y procede a encapsular y enviar la trama Ethernet al destino.
+
+### e) Inspección de la caché ARP y verificación del gateway
+
+Para observar el contenido y estado de la tabla ARP en el sistema operativo Linux se ejecutó el comando `ip neigh show` en la terminal (equivalente a `arp -a` en Windows):
+
+![Caché ARP](./images/punto%202/cache_arp.png)
+
+*(Aclaración metodológica: Debido a que la realización del trabajo práctico se dividió de forma colaborativa entre los integrantes del grupo, el Punto 1 y el Punto 2 fueron ejecutados en equipos y redes domésticas diferentes. Por tal motivo, los valores numéricos concretos de las direcciones MAC físicas y de los gateways difieren entre las capturas de cada punto al tratarse de routers y placas de red distintas).*
+
+**Análisis de la salida:**
+- **Entrada del gateway:** En la captura de la caché de este equipo se observa que la dirección IP del router/gateway local (`192.168.1.1`), alcanzable mediante la interfaz de red inalámbrica `wlxb0a7b9df24fd`, se encuentra aprendida y asociada a su dirección física MAC correspondiente en estado `REACHABLE`.
+- **Relación con el comportamiento observado en el punto anterior:** Aunque los valores físicos cambien entre redes hogareñas, el principio fundamental de funcionamiento se cumple de forma idéntica: la dirección MAC de destino con la que se encapsula cualquier paquete dirigido fuera de la red local (como un ping hacia una IP de Internet) siempre **coincide exactamente con la dirección MAC física del gateway** registrada en la caché ARP del equipo que emite la comunicación, ya que es el router local quien se encarga de recibir físicamente la trama y reenviarla al exterior.
 
 ---
 

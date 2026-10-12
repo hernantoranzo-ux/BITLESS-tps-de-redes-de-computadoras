@@ -40,6 +40,8 @@ Octubre 2026
    - [c) Caché ARP](#c-caché-arp)
    - [d) Procedimiento de resolución de direcciones](#d-procedimiento-de-resolución-de-direcciones)
    - [e) Inspección de la caché ARP y verificación del gateway](#e-inspección-de-la-caché-arp-y-verificación-del-gateway)
+   - [f) Generación y captura de tráfico ARP](#f-generación-y-captura-de-tráfico-arp)
+
 
 3. [TCP y UDP "a mano" con ncat](#3-tcp-y-udp-a-mano-con-ncat)
    - [Conceptos previos](#conceptos-previos)
@@ -153,6 +155,136 @@ Para observar el contenido y estado de la tabla ARP en el sistema operativo Linu
 **Análisis de la salida:**
 - **Entrada del gateway:** En la captura de la caché de este equipo se observa que la dirección IP del router/gateway local (`192.168.1.1`), alcanzable mediante la interfaz de red inalámbrica `wlxb0a7b9df24fd`, se encuentra aprendida y asociada a su dirección física MAC correspondiente en estado `REACHABLE`.
 - **Relación con el comportamiento observado en el punto anterior:** Aunque los valores físicos cambien entre redes hogareñas, el principio fundamental de funcionamiento se cumple de forma idéntica: la dirección MAC de destino con la que se encapsula cualquier paquete dirigido fuera de la red local (como un ping hacia una IP de Internet) siempre **coincide exactamente con la dirección MAC física del gateway** registrada en la caché ARP del equipo que emite la comunicación, ya que es el router local quien se encarga de recibir físicamente la trama y reenviarla al exterior.
+
+### f) Generación y captura de tráfico ARP
+
+En este punto se capturó tráfico en la interfaz de red inalámbrica (`wlxb0a7b9df24fd`) utilizando Wireshark con el filtro de visualización:
+```text
+arp || icmp
+```
+
+Dado que las entradas ARP permanecen guardadas temporalmente en la memoria caché del sistema operativo, se utilizaron diferentes métodos para forzar la emisión y captura de paquetes ARP.
+
+#### 1. Generación de tráfico ARP
+
+##### Opción A: Ping a una IP inexistente de la misma subred (192.168.1.253)
+
+Se ejecutó una prueba de conectividad hacia una dirección IP que no está asignada a ningún dispositivo dentro de la red local:
+
+```bash
+ping -4 -c 2 192.168.1.253
+```
+
+**Resultado en la terminal:**
+
+![Terminal Opción A](./images/punto%202/opcionA_terminal.png)
+
+Como se observa, el sistema operativo intentó resolver la dirección física del destino y, al no obtener respuesta, devolvió el error `Destination Host Unreachable` con un 100% de pérdida de paquetes.
+
+**Captura en Wireshark:**
+
+![Wireshark Opción A](./images/punto%202/opcionA_wireshark.png)
+
+**Análisis de la captura:**
+- El equipo emisor (`TPLink_df:24:fd` / `192.168.1.5`) generó exactamente **3 solicitudes consecutivas de ARP Request** en modo difusión (*broadcast*) preguntando:  
+  *«Who has 192.168.1.253? Tell 192.168.1.5»* (Tramas 61628, 61711 y 61835).
+- **No se registró ningún ARP Reply**, ya que ningún dispositivo en la LAN posee dicha dirección IP asignada.
+- **No se transmitió ningún paquete ICMP Echo Request** por la red física. Debido a que el sistema operativo no logró resolver la dirección MAC de destino mediante ARP, la capa de enlace no pudo encapsular la trama Ethernet y el datagrama IP fue descartado localmente.
+
+##### Opción B: Eliminación de la entrada del gateway en la caché y ping al router
+
+Para observar un ciclo completo de resolución de direcciones (Request y Reply exitosos), se eliminó la entrada del router de la caché ARP local y posteriormente se realizó un ping hacia el gateway:
+
+```bash
+sudo ip neigh del 192.168.1.1 dev wlxb0a7b9df24fd
+ping -4 -c 2 192.168.1.1
+```
+
+**Resultado en la terminal:**
+
+![Terminal Opción B](./images/punto%202/opcionB_terminal.png)
+
+El comando ping respondió de forma exitosa (2 paquetes transmitidos, 2 recibidos, 0% de pérdida de paquetes y tiempos de respuesta de 2 a 6 ms).
+
+**Captura en Wireshark:**
+
+![Wireshark Opción B](./images/punto%202/opcionB_wireshark.png)
+
+**Análisis de la captura:**
+- Inmediatamente después de vaciar la entrada del gateway con `ip neigh del`, el sistema operativo generó un **ARP Request** en difusión (*broadcast*) a la dirección `ff:ff:ff:ff:ff:ff` preguntando por la MAC del router:  
+  *«Who has 192.168.1.1? Tell 192.168.1.5»* (Trama 3969).
+- El router respondió inmediatamente con un **ARP Reply** en modo monodifusión (*unicast*) directo a la MAC de la PC:  
+  *«192.168.1.1 is at c4:34:5b:17:17:5d»* (Trama 3970).
+- Una vez actualizada la caché ARP, los paquetes de ping (**ICMP Echo Request** y **ICMP Echo Reply**) se transmitieron con normalidad (Tramas 82422 a 82557) sin requerir nuevas consultas ARP.
+
+##### Opción C: Comunicación con otro equipo de la LAN (192.168.1.3)
+
+Se realizó una prueba de comunicación directa hacia otro host ubicado dentro de la misma red de área local (en este caso, un dispositivo con dirección IP `192.168.1.3`), eliminando previamente su entrada de la caché para forzar el ciclo ARP:
+
+```bash
+sudo ip neigh del 192.168.1.3 dev wlxb0a7b9df24fd
+ping -4 -c 2 192.168.1.3
+```
+
+**Resultado en la terminal:**
+
+![Terminal Opción C](./images/punto%202/opcionC_terminal.png)
+
+El comando ping respondió exitosamente (2 paquetes transmitidos, 2 recibidos, 0% de pérdida de paquetes).
+
+**Captura en Wireshark:**
+
+![Wireshark Opción C](./images/punto%202/opcionC_wireshark.png)
+
+**Análisis de la captura:**
+- **Resolución directa entre hosts de la LAN:** El equipo emisor (`192.168.1.5` / `TPLink_df:24:fd`) transmitió un **ARP Request** en difusión (*broadcast*) preguntando:  
+  *«Who has 192.168.1.3? Tell 192.168.1.5»* (Trama 1870).  
+  El host destinatario contestó con un **ARP Reply** en monodifusión (*unicast*) informando su dirección física:  
+  *«192.168.1.3 is at 6c:05:d3:58:24:fd»* (Trama 1885).
+- **Tráfico directo entre estaciones:** A diferencia de las comunicaciones hacia Internet (donde la MAC de destino es obligatoriamente la del router), en este caso las tramas Ethernet viajan directamente entre las placas de red físicas de ambos equipos (`b0:a7:b9:df:24:fd` y `6c:05:d3:58:24:fd`), actuando el router únicamente como conmutador (*switch*) de capa 2.
+- **Impacto de ARP en la latencia (RTT):** En la terminal se evidencia que el primer paquete ICMP tuvo un tiempo de respuesta de **218 ms**, mientras que el segundo paquete tardó solamente **3.67 ms**. Esta marcada diferencia ilustra perfectamente el costo temporal de la resolución: el primer paquete debió esperar a que se complete el intercambio ARP Request/Reply antes de poder ser transmitido, mientras que el segundo se envió inmediatamente consultando la entrada ya aprendida en la caché ARP.
+
+#### 2. Análisis comparativo: ARP Request vs. ARP Reply
+
+Tomando como referencia las tramas obtenidas en la **Opción B** (Trama 3969 de solicitud y Trama 3970 de respuesta), se completó la siguiente tabla con los valores reales observados en Wireshark:
+
+| Campo | ARP Request (Trama 3969) | ARP Reply (Trama 3970) |
+| :--- | :--- | :--- |
+| **MAC destino (encabezado Ethernet)** | `ff:ff:ff:ff:ff:ff` (Broadcast) | `b0:a7:b9:df:24:fd` (Unicast a la PC) |
+| **MAC origen (encabezado Ethernet)** | `b0:a7:b9:df:24:fd` (PC emisora) | `c4:34:5b:17:17:5d` (Router Huawei) |
+| **Opcode** | `1` (*request*) | `2` (*reply*) |
+| **Sender MAC address** | `b0:a7:b9:df:24:fd` (PC emisora) | `c4:34:5b:17:17:5d` (Router Huawei) |
+| **Sender IP address** | `192.168.1.5` | `192.168.1.1` |
+| **Target MAC address** | `00:00:00:00:00:00` | `b0:a7:b9:df:24:fd` (PC consultante) |
+| **Target IP address** | `192.168.1.1` (IP consultada) | `192.168.1.5` |
+
+#### 3. Preguntas de análisis sobre la captura
+
+##### a)
+El **ARP Request** debe enviarse obligatoriamente a la dirección de difusión (*broadcast*, `ff:ff:ff:ff:ff:ff`) porque el equipo emisor desconoce totalmente qué placa física posee la IP buscada; la única forma de asegurar que el mensaje llegue al destinatario es transmitiéndolo a todos los hosts de la red local. Por el contrario, el **ARP Reply** se envía en modo monodifusión (*unicast*) porque el host que responde ya conoce la dirección MAC de quien le preguntó (dado que venía incluida en el campo *Sender MAC address* de la solicitud), evitando generar tráfico innecesario para el resto de la red.
+
+El **Target MAC address** en el Request tiene el valor `00:00:00:00:00:00` debido a que es justamente la información desconocida que se está intentando averiguar mediante la consulta.
+
+##### b)
+El **Campo Type (EtherType)** tiene el valor **`0x0806`** (*Address Resolution Protocol*).
+
+No hay encabezado IP. El mensaje ARP se transporta directamente encapsulado dentro de la trama Ethernet.
+
+ARP opera directamente sobre la **Capa de Enlace de Datos (Capa 2)**, funcionando a la par de IP (no viaja dentro de IP como lo hace ICMP), sirviendo como protocolo de control y traducción entre el direccionamiento lógico de red (IPv4) y el direccionamiento físico (Ethernet).
+
+##### c)
+Aparecieron **3 solicitudes ARP Request** consecutivas (reintentos generados por el kernel de Linux).
+
+**No hubo ningún ARP Reply**, ya que ningún dispositivo de la red posee la dirección `192.168.1.253`.
+
+No apareció ningún paquete ICMP Echo Request en la red. Esto ocurre porque, para que el sistema operativo pueda enviar el datagrama IP a nivel físico, necesita indefectiblemente conocer la dirección MAC de destino para construir la cabecera Ethernet. Al fallar la resolución ARP y expirar el tiempo de espera, la trama nunca se puede armar y el paquete es descartado internamente por el sistema operativo, notificando en consola `Destination Host Unreachable`.
+
+##### d)
+Al realizar un nuevo ping poco tiempo después, **no vuelve a generarse tráfico ARP en la red**. El sistema operativo consulta su caché ARP local, encuentra la correspondencia IP-MAC previamente aprendida y transmite las tramas Ethernet directamente.
+
+Optimiza el rendimiento global de la red al evitar la sobrecarga y congestión por tramas de difusión (*broadcast storms*), eliminando el retardo o latencia que conllevaría resolver la dirección física antes de cada transmisión individual.
+
+Si un equipo cambia de placa de red, se apaga, o el servidor DHCP reasigna esa dirección IP a otro dispositivo (o ante un ataque de *ARP Spoofing*), el emisor seguirá enviando tramas dirigidas a una dirección física incorrecta o inexistente, provocando la pérdida total de conectividad con ese host o permitiendo la interceptación de tráfico hasta que la entrada expire y sea renovada dinámicamente.
 
 ---
 

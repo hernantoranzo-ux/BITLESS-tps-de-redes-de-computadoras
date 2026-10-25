@@ -32,6 +32,9 @@ Octubre 2026
    - [1) Pasos para el crimpado de un cable bajo la norma T568A/B DERECHO](#1-pasos-para-el-crimpado-de-un-cable-bajo-la-norma-t568ab-derecho)
    - [2) Armado del cable de nuestro grupo](#2-armado-del-cable-de-nuestro-grupo)
    - [3 y 4) Intercambio de cables con otro grupo](#3-y-4-intercambio-de-cables-con-otro-grupo)
+2. [Desarrollar un pequeño servidor](#desarrollar-un-pequeño-servidor)
+   - [1) Inicio del Servidor y Transferencia de Archivos](#1-inicio-del-servidor-y-transferencia-de-archivos)
+   - [2) Captura y Análisis de Tráfico](#2-captura-y-análisis-de-tráfico)
 
 ---
 
@@ -99,3 +102,62 @@ A su vez, para comprobar que su cable funcionara correctamente, utilizamos el **
 <img src="./images/parte_1/simuLANdores_4.png" width="600">
 
 Aparte de ese **desperfecto imperdonable** que su cable tenía, los cables se veían bien alineados y ordenados dentro del conector, por lo que ese proceso se había realizado correctamente.
+
+---
+
+---
+
+## Desarrollar un pequeño servidor
+
+Configuración inicial:
+
+IP Computadora 1 (Servidor): 192.168.1.72
+
+IP Computadora 2 (Cliente): 192.168.1.64
+
+`nota: este punto fue realizado en un hogar conectando una notebook y una PC a la red doméstica.`
+
+### 1)  Inicio del Servidor y Transferencia de Archivos:
+
+Para empezar, se creó un directorio con archivos de prueba y se levantó un servidor en la Computadora 1 ejecutando el comando `python3 -m http.server 8000`.
+
+![Terminal del servidor](<images/Desarrollar un pequeño servidor/terminal del servidor.png>)
+
+Luego, desde la Computadora 2, se accedió a la dirección del servidor a través de un navegador web, visualizando el índice del directorio alojado en el puerto 8000.
+
+![Navegador del cliente](<images/Desarrollar un pequeño servidor/fotos cliente/navegador del cliente.jpg>)
+
+Se puede observar que durante esta primera etapa de navegación web se realizaron las siguientes peticiones HTTP al servidor para listar el directorio y visualizar/descargar el contenido:
+
+`GET /` Carga del índice del directorio, respuesta 200 OK.
+
+`GET /favicon.ico` Petición automática del navegador, respuesta 404 File not found.
+
+`GET /yo.png` Descarga de imagen, respuesta 200 OK.
+
+`GET /TP6_Redes.txt` Descarga de archivo de texto, respuesta 200 OK.
+
+`GET /RC - TP N6.pdf` Descarga de documento PDF, respuesta 200 OK.
+
+Finalmente, se realizó una nueva transferencia de archivos, pero esta vez solicitando un recurso directamente desde la terminal del cliente utilizando la herramienta curl:
+
+```
+curl -O http://192.168.1.72:8000/yo.png
+```
+
+
+![Descarga con cURL](<images/Desarrollar un pequeño servidor/curl.png>)
+
+### 2) Captura y Análisis de Tráfico:
+
+Durante todo el proceso de transferencia de los archivos (tanto vía navegador como por consola), se capturó el tráfico en la interfaz de red de la Computadora 2 (wlan0), aplicando un filtro para aislar las comunicaciones salientes y entrantes en el puerto 8000.
+
+![Tráfico de Wireshark](<images/Desarrollar un pequeño servidor/trafico wireshark.png>)
+
+Al analizar los paquetes capturados en Wireshark, podemos ver:
+
+TCP: Al inicio de cada solicitud, el establecimiento de una conexión mediante el Three-way handshake de TCP.
+
+HTTP: Una vez establecida la conexión en la capa de transporte, fluye el tráfico de aplicación. El cliente realiza peticiones solicitando los recursos con el método GET, por ejemplo, `GET /TP6_Redes.txt HTTP/1.1` y las correspondientes respuestas del servidor. Estas respuestas incluyen un código de estado, siendo `200 OK` cuando se entregó el recurso con éxito, o `404 File not found` cuando el recurso no existía como sucedió con el ícono del navegador.
+
+Podemos observar además que, al utilizar el protocolo HTTP estándar, la transferencia de los archivos y los encabezados se realiza entexto plano y puede leerse directamente con Wireshark.

@@ -1,4 +1,4 @@
-<div align="center">
+﻿<div align="center">
 
 <img src="./images/image1.png" width="200" alt="Logo UNC" />
 
@@ -7,7 +7,7 @@
 **Facultad de Ciencias Exactas, Físicas y Naturales**
 **Cátedra Redes de Computadoras**
 
-## Trabajo Práctico 5
+## Trabajo Práctico 6
 
 </div>
 
@@ -104,7 +104,55 @@ A su vez, para comprobar que su cable funcionara correctamente, utilizamos el **
 Aparte de ese **desperfecto imperdonable** que su cable tenía, los cables se veían bien alineados y ordenados dentro del conector, por lo que ese proceso se había realizado correctamente.
 
 ---
+## Levantar y testear una LAN
 
+### Configuración manual de la interfaz de red
+
+<img src="./images/parte_2/configuracion.png">
+
+### Justificación de las direcciones elegidas
+
+Seleccionamos la IP 192.168.1.72 con la máscara de subred 255.255.255.0 porque pertenecen a un rango de direcciones IPv4 privadas ideales para redes de área local (LAN) pequeñas sin salida directa a internet. Esto tiene sentido porque la computadora del otro grupo se encontraba en la misma red (192.168.1.100), compartiendo el mismo identificador de red, permitiendo la comunicación a través del switch físico sin necesitar un router externo.
+
+
+
+### Establecimiento del receptor UDP y envío de mensajes intergrupales
+
+
+<img src="./images/parte_2/receptor_udp.png">
+
+### 5) Preguntas y respuestas sobre UDP
+
+#### a)¿Se observa algún procedimiento de establecimiento de conexión antes de enviar los datos?
+
+
+No, no se observa ningún procedimiento de conexión. La comunicación UDP no es orientada a conexión, es decir que los datagramas se envían directamente desde la fuente hacia el destino sin negociar estados previos, intercambiar números de secuencia ni sincronizar parámetros entre los extremos.
+
+#### b)¿Existe algún mecanismo de confirmación de recepción equivalente a los ACK de TCP?
+
+
+No, a nivel del protocolo UDP. Por su característica de no ser confiable, no incorpora mecanismos nativos de control de flujo, retransmisión de paquetes perdidos ni acuses de recibo (ACK).
+
+
+#### c)¿Qué ocurre si se envían mensajes mientras el receptor UDP no está ejecutándose? 
+
+
+Si no se está ejecutando un receptor UDP, dependiendo de cómo se configure el SO del destino, el host receptor suele responder con un mensaje de control ICMP Port Unreachable. Mientras tanto, en el emisor, los datagramas se transmiten de todas formas y la terminal no se entera de que nadie los recibió.
+
+
+#### d)¿UDP garantiza que los mensajes lleguen en el mismo orden en que fueron enviados?
+
+No, cada datagrama se procesa y enruta de manera independiente a través de la red. Es decir que los paquetes pueden tomar rutas distintas, sufrir retardos variables o congestiones puntuales, lo cual hace que lleguen en un orden diferente al que fueron emitidos.
+
+#### e) ¿Qué aplicaciones reales utilizan UDP y por qué? 
+
+Las aplicaciones reales que utilizan UDP son:
+   * streaming de video/audio en tiempo real
+   * juegos en línea multijugador 
+   * DNS (Domain Name System) 
+   * protocolos de red y administración local (DHCP, TFTP, SNMP)
+
+    En estas aplicaciones se utiliza UDP ya que priorizan la velocidad y la baja latencia, además de que la pérdida de paquetes es preferible a sufrir retrasos por retransmisiones y al control de flujo propio de TCP.
 ---
 
 ## Desarrollar un pequeño servidor
@@ -160,4 +208,4 @@ TCP: Al inicio de cada solicitud, el establecimiento de una conexión mediante e
 
 HTTP: Una vez establecida la conexión en la capa de transporte, fluye el tráfico de aplicación. El cliente realiza peticiones solicitando los recursos con el método GET, por ejemplo, `GET /TP6_Redes.txt HTTP/1.1` y las correspondientes respuestas del servidor. Estas respuestas incluyen un código de estado, siendo `200 OK` cuando se entregó el recurso con éxito, o `404 File not found` cuando el recurso no existía como sucedió con el ícono del navegador.
 
-Podemos observar además que, al utilizar el protocolo HTTP estándar, la transferencia de los archivos y los encabezados se realiza entexto plano y puede leerse directamente con Wireshark.
+Podemos observar además que, al utilizar el protocolo HTTP estándar, la transferencia de los archivos y los encabezados se realiza en texto plano y puede leerse directamente con Wireshark.

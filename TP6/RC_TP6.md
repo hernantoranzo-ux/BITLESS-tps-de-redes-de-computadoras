@@ -116,31 +116,56 @@ Seleccionamos la IP 192.168.1.72 con la máscara de subred 255.255.255.0 porque 
 
 
 
-### Establecimiento del receptor UDP y envío de mensajes intergrupales
+### 3) Establecimiento del receptor UDP y envío de mensajes intergrupales
 
+> [!NOTE]
+> **Aclaración:** En esta sección se perdieron las capturas originales y se optó por simular con GNS3 la comunicación UDP respetando la topología y el procedimiento original. 
 
-<img src="./images/parte_2/receptor_udp.png">
+* Imagen de la simulación
+
+<img src="./images/simulacion/2026-10-31_20-41.png">
+
+* Emisor
+
+<img src="./images/simulacion/emisor.png">
+
+* Receptor
+
+<img src="./images/simulacion/listener.png">
+
+### 4) Paquetes capturados con Wireshark
+
+* Envío 1
+
+<img src="./images/simulacion/envio1.png">
+
+* Envío 2
+
+<img src="./images/simulacion/envio2.png">
+* Envío 3
+<img src="./images/simulacion/envio3.png">
+
 
 ### 5) Preguntas y respuestas sobre UDP
 
-#### a)¿Se observa algún procedimiento de establecimiento de conexión antes de enviar los datos?
+#### a) ¿Se observa algún procedimiento de establecimiento de conexión antes de enviar los datos?
 
 
 No, no se observa ningún procedimiento de conexión. La comunicación UDP no es orientada a conexión, es decir que los datagramas se envían directamente desde la fuente hacia el destino sin negociar estados previos, intercambiar números de secuencia ni sincronizar parámetros entre los extremos.
 
-#### b)¿Existe algún mecanismo de confirmación de recepción equivalente a los ACK de TCP?
+#### b) ¿Existe algún mecanismo de confirmación de recepción equivalente a los ACK de TCP?
 
 
 No, a nivel del protocolo UDP. Por su característica de no ser confiable, no incorpora mecanismos nativos de control de flujo, retransmisión de paquetes perdidos ni acuses de recibo (ACK).
 
 
-#### c)¿Qué ocurre si se envían mensajes mientras el receptor UDP no está ejecutándose? 
+#### c) ¿Qué ocurre si se envían mensajes mientras el receptor UDP no está ejecutándose? 
 
 
 Si no se está ejecutando un receptor UDP, dependiendo de cómo se configure el SO del destino, el host receptor suele responder con un mensaje de control ICMP Port Unreachable. Mientras tanto, en el emisor, los datagramas se transmiten de todas formas y la terminal no se entera de que nadie los recibió.
 
 
-#### d)¿UDP garantiza que los mensajes lleguen en el mismo orden en que fueron enviados?
+#### d) ¿UDP garantiza que los mensajes lleguen en el mismo orden en que fueron enviados?
 
 No, cada datagrama se procesa y enruta de manera independiente a través de la red. Es decir que los paquetes pueden tomar rutas distintas, sufrir retardos variables o congestiones puntuales, lo cual hace que lleguen en un orden diferente al que fueron emitidos.
 

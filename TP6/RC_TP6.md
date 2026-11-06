@@ -204,8 +204,7 @@ Las aplicaciones reales que utilizan UDP son:
    * DNS (Domain Name System) 
    * protocolos de red y administración local (DHCP, TFTP, SNMP)
 
-    En estas aplicaciones se utiliza UDP ya que priorizan la velocidad y la baja latencia, además de que la pérdida de paquetes es preferible a sufrir retrasos por retransmisiones y al control de flujo propio de TCP.
----
+En estas aplicaciones se utiliza UDP ya que priorizan la velocidad y la baja latencia, además de que la pérdida de paquetes es preferible a sufrir retrasos por retransmisiones y al control de flujo propio de TCP.
 
 ## Desarrollar un pequeño servidor
 
@@ -268,5 +267,4 @@ HTTP: Una vez establecida la conexión en la capa de transporte, fluye el tráfi
 
 ---
 
-> [TIP]
-> **Cierre de la actividad:** Finalizadas las pruebas del laboratorio, volvimos a configurar la interfaz de red a modo DHCP automático para recuperar la conectividad a Internet.
+**Al terminar la actividad:** Finalizado el laboratorio, volvimos a configurar la interfaz de red a modo DHCP automático para recuperar la conectividad a Internet.

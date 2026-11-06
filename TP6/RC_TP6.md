@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
 
 <img src="./images/image1.png" width="200" alt="Logo UNC" />
 
@@ -28,14 +28,19 @@ Octubre 2026
 
 ## Índice
 
-1. [Parte 1: Taller de armado y verificación de cables Cat5/Cat5e bajo estándar T568A/B.](#parte-1-taller-de-armado-y-verificación-de-cables-cat5cat5e-bajo-estándar-t568ab)
+1. [Parte 1: Taller de armado y verificación de cables Cat5/Cat5e bajo estándar T568A/B](#parte-1-taller-de-armado-y-verificación-de-cables-cat5cat5e-bajo-estándar-t568ab)
    - [1) Pasos para el crimpado de un cable bajo la norma T568A/B DERECHO](#1-pasos-para-el-crimpado-de-un-cable-bajo-la-norma-t568ab-derecho)
    - [2) Armado del cable de nuestro grupo](#2-armado-del-cable-de-nuestro-grupo)
    - [3 y 4) Intercambio de cables con otro grupo](#3-y-4-intercambio-de-cables-con-otro-grupo)
-2. [Desarrollar un pequeño servidor](#desarrollar-un-pequeño-servidor)
+2. [Parte 2: Equipamiento físico y Levantar y testear una LAN](#parte-2-equipamiento-físico-y-levantar-y-testear-una-lan)
+   - [1) Configuración manual de la interfaz de red y justificación](#1-configuración-manual-de-la-interfaz-de-red-y-justificación)
+   - [2) Conexión al switch y verificación con Ping](#2-conexión-al-switch-y-verificación-con-ping)
+   - [3) Establecimiento del receptor UDP y envío de mensajes intergrupales](#3-establecimiento-del-receptor-udp-y-envío-de-mensajes-intergrupales)
+   - [4) Paquetes capturados con Wireshark](#4-paquetes-capturados-con-wireshark)
+   - [5) Preguntas y respuestas sobre UDP](#5-preguntas-y-respuestas-sobre-udp)
+3. [Desarrollar un pequeño servidor](#desarrollar-un-pequeño-servidor)
    - [1) Inicio del Servidor y Transferencia de Archivos](#1-inicio-del-servidor-y-transferencia-de-archivos)
    - [2) Captura y Análisis de Tráfico](#2-captura-y-análisis-de-tráfico)
-
 ---
 
 ## Consignas
@@ -99,51 +104,73 @@ Como podemos observar a primera vista, ni siquiera han retirado el **hilo de nyl
 
 A su vez, para comprobar que su cable funcionara correctamente, utilizamos el **tester de cables Ethernet**. Su cable funcionaba correctamente, por lo que a nivel funcional estaba bien hecho. Sin embargo, el mismo **hilo de nylon** que mencionamos anteriormente **fue una molestia** a la hora de hacer la prueba, pues teníamos que **apartarlo** para **asegurarnos de que no se introdujera en el tester**. Lamentablemente, nos olvidamos de tomar foto del proceso, por lo que continuación adjuntamos una imagen generada con IA de cómo fue aproximadamente.
 
-<img src="./images/parte_1/simuLANdores_4.png" width="600">
+<img src="./images/parte_1/simuLANdores_4.jpeg" width="600">
 
 Aparte de ese **desperfecto imperdonable** que su cable tenía, los cables se veían bien alineados y ordenados dentro del conector, por lo que ese proceso se había realizado correctamente.
 
 ---
-## Levantar y testear una LAN
+## Parte 2: Equipamiento físico y Levantar y testear una LAN
 
-### Configuración manual de la interfaz de red
+### 1) Configuración manual de la interfaz de red y justificación
+
+#### Configuración manual de la interfaz de red
 
 <img src="./images/parte_2/configuracion.png">
 
-### Justificación de las direcciones elegidas
+#### Justificación de las direcciones elegidas
 
 Seleccionamos la IP 192.168.1.72 con la máscara de subred 255.255.255.0 porque pertenecen a un rango de direcciones IPv4 privadas ideales para redes de área local (LAN) pequeñas sin salida directa a internet. Esto tiene sentido porque la computadora del otro grupo se encontraba en la misma red (192.168.1.100), compartiendo el mismo identificador de red, permitiendo la comunicación a través del switch físico sin necesitar un router externo.
 
+**Gateway:** En la configuración de la interfaz colocamos `192.168.1.1`. De todos modos no hacía falta, ya que la actividad consiste en una red LAN conectada por un switch de Capa 2 y todas las computadoras pertenecían al mismo dominio de broadcast y subred IP, por lo que la comunicación entre hosts se resolvió directamente a nivel MAC mediante el protocolo ARP. El gateway solo es consultado por el sistema operativo cuando el destino pertenece a una red diferente o para salir a Internet.
 
+### 2) Conexión al switch y verificación con Ping
+
+Una vez comprobados los cables de red construidos en la Parte 1, se procedió a conectar físicamente ambos equipos a los puertos del switch. Para comprobar el correcto funcionamiento realizamos ping desde nuestra máquina a la del otro grupo:
+
+```text
+Haciendo ping a 192.168.1.100 con 32 bytes de datos:
+Respuesta desde 192.168.1.100: bytes=32 tiempo=1ms TTL=128
+Respuesta desde 192.168.1.100: bytes=32 tiempo<1m TTL=128
+Respuesta desde 192.168.1.100: bytes=32 tiempo=1ms TTL=128
+Respuesta desde 192.168.1.100: bytes=32 tiempo=1ms TTL=128
+
+Estadísticas de ping para 192.168.1.100:
+    Paquetes: enviados = 4, recibidos = 4, perdidos = 0
+    (0% perdidos),
+Tiempos aproximados de ida y vuelta en milisegundos:
+    Mínimo = 0ms, Máximo = 1ms, Media = 0ms
+```
+
+Esta respuesta confirma el correcto funcionamiento de las conexiones físicas y lógicas entre ambos equipos.
 
 ### 3) Establecimiento del receptor UDP y envío de mensajes intergrupales
 
-> [!NOTE]
+> [NOTE]
 > **Aclaración:** En esta sección se perdieron las capturas originales y se optó por simular con GNS3 la comunicación UDP respetando la topología y el procedimiento original. 
 
 * Imagen de la simulación
 
-<img src="./images/simulacion/2026-10-31_20-41.png">
+<img src="./images/Simulacion/2026-10-31_20-41.png">
 
 * Emisor
 
-<img src="./images/simulacion/emisor.png">
+<img src="./images/Simulacion/Emisor.png">
 
 * Receptor
 
-<img src="./images/simulacion/listener.png">
+<img src="./images/Simulacion/Listener.png">
 
 ### 4) Paquetes capturados con Wireshark
 
 * Envío 1
 
-<img src="./images/simulacion/envio1.png">
+<img src="./images/Simulacion/Envio1.png">
 
 * Envío 2
 
-<img src="./images/simulacion/envio2.png">
+<img src="./images/Simulacion/Envio2.png">
 * Envío 3
-<img src="./images/simulacion/envio3.png">
+<img src="./images/Simulacion/Envio3.png">
 
 
 ### 5) Preguntas y respuestas sobre UDP
@@ -233,4 +260,13 @@ TCP: Al inicio de cada solicitud, el establecimiento de una conexión mediante e
 
 HTTP: Una vez establecida la conexión en la capa de transporte, fluye el tráfico de aplicación. El cliente realiza peticiones solicitando los recursos con el método GET, por ejemplo, `GET /TP6_Redes.txt HTTP/1.1` y las correspondientes respuestas del servidor. Estas respuestas incluyen un código de estado, siendo `200 OK` cuando se entregó el recurso con éxito, o `404 File not found` cuando el recurso no existía como sucedió con el ícono del navegador.
 
-Podemos observar además que, al utilizar el protocolo HTTP estándar, la transferencia de los archivos y los encabezados se realiza en texto plano y puede leerse directamente con Wireshark.
+#### Clasificación del tipo de tráfico capturado
+
+- **Por capa de red y aplicación:** Es tráfico de Capa de Aplicación HTTP/1.1 encapsulado sobre Capa de Transporte TCP en el puerto de destino 8000.
+- **Por modelo de comunicación:** Es tráfico Unicast bajo el modelo Cliente-Servidor, orientado a transacciones petición-respuesta sincrónicas.
+- **Por seguridad y cifrado:** Es tráfico en texto plano (Cleartext / No cifrado). A diferencia del protocolo HTTPS (TLS/SSL), todos los encabezados HTTP, rutas solicitadas y el contenido bruto de los archivos transmitidos son legibles en claro directamente por cualquier dispositivo de captura intermedio en la red.
+
+---
+
+> [TIP]
+> **Cierre de la actividad:** Finalizadas las pruebas del laboratorio, volvimos a configurar la interfaz de red a modo DHCP automático para recuperar la conectividad a Internet.

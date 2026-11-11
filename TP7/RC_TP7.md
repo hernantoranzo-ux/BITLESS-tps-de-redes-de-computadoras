@@ -32,7 +32,7 @@ Octubre 2026
   - [4) Verificar la integridad del mensaje](#4-verificar-la-integridad-del-mensaje)
   - [5) Ubicar y corregir los errores](#5-ubicar-y-corregir-los-errores)
   - [6) Decodificar el mensaje corregido](#6-decodificar-el-mensaje-corregido)
-  - [7) (Opcional) Comparar paridades con script propio](#7-opcional-comparar-paridades-con-script-propio)
+  - [7) Comparar paridades con script propio](#7-comparar-paridades-con-script-propio)
 
 ---
 

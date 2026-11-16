@@ -29,6 +29,9 @@ Octubre 2026
 ## Índice
 
 - [Parte Práctica](#parte-práctica)
+  - [1) Averiguar nuestra IP y máscara](#1-averiguar-nuestra-ip-y-máscara)
+  - [2) Captura de tráfico en Wireshark](#2-captura-de-tráfico-en-wireshark)
+  - [3) Análisis de la estructura del mensaje](#3-análisis-de-la-estructura-del-mensaje)
   - [4) Verificar la integridad del mensaje](#4-verificar-la-integridad-del-mensaje)
   - [5) Ubicar y corregir los errores](#5-ubicar-y-corregir-los-errores)
   - [6) Decodificar el mensaje corregido](#6-decodificar-el-mensaje-corregido)
@@ -44,6 +47,44 @@ Octubre 2026
 ## Consignas
 
 ## Parte Práctica
+
+
+### 1) Averiguar nuestra IP y máscara
+
+Mediante el comando `ipconfig` (o `ip addr`), identificamos los parámetros de red asignados por DHCP en la interfaz Wi-Fi:
+
+<img src="./images/parte_practica/ip_y_mascara.png">
+
+* **Dirección IP asignada:** `192.168.8.195`
+* **Máscara de subred:** `255.255.255.0` (`/24`)
+* **Dirección IP de broadcast:** `192.168.8.255` (calculada aplicando la máscara sobre la subred)
+* **Dirección MAC de broadcast:** `ff:ff:ff:ff:ff:ff`
+
+### 2) Captura de tráfico en Wireshark
+
+Iniciamos una captura en Wireshark sobre la interfaz Wi-Fi durante más de 2 minutos para monitorear el tráfico de la red del laboratorio:
+
+<img src="./images/parte_practica/captura_de_transito.png">
+
+Durante la captura observamos que la computadora transmisora emitía periódicamente (aproximadamente cada 30 segundos) paquetes UDP dirigidos a la dirección de broadcast `192.168.8.255`. Al filtrar estos paquetes, se identificaron las tramas que transportaban la carga útil del desafío.
+
+### 3) Análisis de la estructura del mensaje
+
+Inspeccionando el contenido de los paquetes capturados, identificamos que la carga útil viaja en formato **JSON**:
+
+<img src="./images/parte_practica/mensaje_capturado.png">
+
+El mensaje contiene los siguientes campos:
+
+* **`SIZE` (`"8,7"`):** Define las dimensiones de la matriz bidimensional. Indica **8 filas** y **7 caracteres ASCII** por fila. Dado que cada carácter se codifica en 7 bits, cada fila posee $7 \times 7 = 49$ bits, conformando una matriz total de **8 filas por 49 columnas** (392 bits de datos).
+* **`PL` (Payload):** Cadena de caracteres ASCII formada por `'0'` y `'1'` que representa el mensaje codificado en binario (392 bits en total).
+* **`CHECK` (Bits de control):** Cadena de 57 bits de paridad par calculados por el emisor:
+  * Los primeros **8 bits** corresponden a la paridad par de cada una de las 8 filas.
+  * Los **49 bits** restantes corresponden a la paridad par de cada una de las 49 columnas.
+
+**Interpretación de los datos:**  
+Para validar y reconstruir el mensaje, se debe dividir el payload `PL` en 8 bloques de 49 bits cada uno para formar la matriz, calcular la paridad par de cada fila y columna, y compararla con el campo `CHECK`. Aquellas filas y columnas donde no coincidan indicarán el síndrome de error para localizar e invertir los bits dañados.
+  
 
 ### 4) Verificar la integridad del mensaje
 
